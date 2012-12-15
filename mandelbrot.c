@@ -4,8 +4,8 @@
 #include <omp.h>
 #include <time.h>
 
-#define SIZE      2048
-#define MAX_ITER  99999
+#define SIZE      24
+#define MAX_ITER  999
 
 struct complexObj {
     double a;
@@ -86,7 +86,7 @@ int main() {
     double t = omp_get_wtime();
     printf("Mandlebrot: \n");
     fillTable();
-    //printTable();
+    printTable();
     t = omp_get_wtime() - t;
     printf("Elapsed %f seconds.\n", t);
     return 0;
