@@ -1,5 +1,9 @@
 CC=gcc
 CFLAGS=-I -g -Wall -std=gnu99 -O2 -fopenmp
+MDEPS = mandelbrot.c complex.c complex.h
 
-mandelbrot: mandelbrot.o
-	$(CC) $(CFLAGS) -o mandelbrot mandelbrot.o -I.
+mandelbrot: $(MDEPS)
+	$(CC) $(MDEPS) $(CFLAGS) -o mandelbrot
+
+clean:
+	rm mandelbrot mandelbrot.o
