@@ -20,7 +20,7 @@ inline uint solveMandelbrot(complex C) {
     return cur_iter;
 }
 
-void fillTableMandelbrot() {
+void fillTableBuddhabrot() {
     int i, j;
     complex C;
     uint cur_value;
@@ -38,8 +38,8 @@ void fillTableMandelbrot() {
 
 int main() {
     double t = omp_get_wtime();
-    printf("Mandlebrot: \n");
-    fillTableMandelbrot();
+    printf("Buddhabrot: \n");
+    fillTableBuddhabrot();
     printTable(iter_table);
     t = omp_get_wtime() - t;
     printf("Elapsed %f seconds.\n", t);
