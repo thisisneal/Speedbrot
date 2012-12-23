@@ -30,4 +30,13 @@ inline complex getCoords(uint i, uint j) {
     return C;
 }
 
+inline void getIndeces(complex C, uint *i, uint *j) {
+    double x_scale = (C.a  + 2.0) / 4.0;
+    double y_scale = (C.bi + 2.0) / 4.0;
+    uint x_val = (uint)(x_scale * (double)(TSIZE_H));
+    uint y_val = (uint)(y_scale * (double)(TSIZE_H));
+    *i = x_val;
+    *j = y_val;
+}
+
 #endif
