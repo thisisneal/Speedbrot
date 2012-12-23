@@ -2,20 +2,49 @@
 #define UTIL_H
 
 #include <stdio.h>
+#include <math.h>
 
 #include "constants.h"
 #include "complex.h"
 typedef unsigned int uint;
 
+#define PRINT_MODE  3
+#define PRINT_ALIGN 3
+
+inline void printCur(uint cur_iter) {
+    // Aligned integer printing
+    if(PRINT_MODE == 1) {
+        printf("%*d", PRINT_ALIGN, cur_iter);
+    }
+    // Logarithmic mandelbrot printing
+    else if(PRINT_MODE == 2) {
+        char* print_str = " .,xo-~XO0";
+        uint  print_num = 10;
+        double ratio = log((double)(cur_iter)) / log((double)(MAX_ITER));
+        uint index = (uint)( ratio * (double)(print_num - 1) );
+        char cur_char = *(print_str + index);
+        printf("%c ", cur_char);
+    }
+    // Logarithmic buddhabrot printing
+    else if(PRINT_MODE == 3) {
+        char* print_str = " .,xo-~XO0";
+        uint  print_num = 10;
+        uint  MAX_COUNT = 300;
+        double ratio = log((double)(cur_iter)) / log((double)(MAX_COUNT));
+        if(ratio > 1.0) ratio = 1.0;
+        uint index = (uint)( ratio * (double)(print_num - 1) );
+        char cur_char = *(print_str + index);
+        printf("%c ", cur_char);
+    }
+}
+
 void printTable( uint (*iter_table)[TSIZE_W] ) {
-    const int print_align = 3;
     for(int i = 0; i < TSIZE_H; i++ ) {
         for(int j = 0; j < TSIZE_W; j++ ) {
-            printf("%*d", print_align, iter_table[i][j]);
+            printCur(iter_table[i][j]);
         }
         for(int j = 0; j < TSIZE_W - 2; j++ ) {
-            printf("%*d", print_align,
-                          iter_table[i][TSIZE_W - 2 - j]);
+            printCur(iter_table[i][TSIZE_W - 2 - j]);
         }
         printf("\n");
     }

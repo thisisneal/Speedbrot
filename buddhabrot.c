@@ -10,7 +10,7 @@
 #include "util.h"
 
 uint iter_table[TSIZE_H][TSIZE_W];
-double cur_exp = 0.1;
+double cur_exp = 0.01;
 
 inline uint solveMandelbrot(complex C) {
     uint cur_iter = 0;
@@ -61,7 +61,7 @@ void fillTableBuddhabrot() {
 int main() {
     double t = omp_get_wtime();
     printf("Buddhabrot: \n");
-    for(int i = 0; i < 50; i++) {
+    for(int i = 0; i < 400; i++) {
         fillTableBuddhabrot();
         printTable(iter_table);
         printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
@@ -71,9 +71,9 @@ int main() {
             for(int j = 0; j < TSIZE_W; j++ )
                 iter_table[i][j] = 0;
 
-        cur_exp += 0.1;
+        cur_exp += 0.01;
 
-        usleep(100000);
+        usleep(50000);
     }
     t = omp_get_wtime() - t;
     printf("Elapsed %f seconds.\n", t);
