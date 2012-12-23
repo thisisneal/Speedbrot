@@ -1,15 +1,15 @@
 CC=gcc
-CFLAGS=-I -g -Wall -std=gnu99 -O2 -fopenmp
-MDEPS = constants.h complex.h util.h mandelbrot.c
-BDEPS = constants.h complex.h util.h buddhabrot.c
+CFLAGS=-I -g -Wall -std=gnu99 -O2 -fopenmp -lm
+MDEPS = lodepng.h lodepng.c constants.h complex.h util.h mandelbrot.c
+BDEPS = lodepng.h lodepng.c constants.h complex.h util.h buddhabrot.c
 
 default: mandelbrot buddhabrot
 
 mandelbrot: $(MDEPS)
-	$(CC) $(MDEPS) $(CFLAGS) -o mandelbrot
+	$(CC) $(MDEPS) -o mandelbrot $(CFLAGS)
 
 buddhabrot: $(BDEPS)
-	$(CC) $(BDEPS) $(CFLAGS) -o buddhabrot
+	$(CC) $(BDEPS) -o buddhabrot $(CFLAGS)
 
 clean:
 	rm mandelbrot

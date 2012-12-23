@@ -2,7 +2,10 @@
 #define UTIL_H
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
+
+#include "lodepng.h"
 
 #include "constants.h"
 #include "complex.h"
@@ -48,6 +51,36 @@ void printTable( uint (*iter_table)[TSIZE_W] ) {
         }
         printf("\n");
     }
+}
+
+// Lodepng example direct image writing
+void encodeOneStep(const char* filename, const unsigned char* image,
+                   unsigned width, unsigned height)
+{
+    /*Encode the image*/
+    unsigned error = lodepng_encode32_file(filename, image, width, height);
+
+    if(error) printf("error");
+}
+
+void writeImage(char* filename) {
+    /*generate some image*/
+    uint width = TSIZE_H, height = TSIZE_H;
+    unsigned char* image = malloc(width * height * 4);
+    uint x, y;
+    for(y = 0; y < height; y++) {
+        for(x = 0; x < width; x++) {
+            image[4 * width * y + 4 * x + 0] = 255;
+            image[4 * width * y + 4 * x + 1] = x % 255;
+            image[4 * width * y + 4 * x + 2] = x % 255;
+            image[4 * width * y + 4 * x + 3] = 255;
+        }
+    }
+
+    /*run an example*/
+    encodeOneStep(filename, image, width, height);
+
+    free(image);
 }
 
 inline complex getCoords(uint i, uint j) {

@@ -41,6 +41,7 @@ int main() {
     printf("Mandlebrot: \n");
     fillTableMandelbrot();
     printTable(iter_table);
+    writeImage("test.png");
     t = omp_get_wtime() - t;
     printf("Elapsed %f seconds.\n", t);
     return 0;
