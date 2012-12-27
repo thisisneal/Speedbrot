@@ -32,12 +32,12 @@ inline complex square(complex C) {
  * Get the magnitude (r) of the complex number
  *  where r^2 = (a^2 + bi^2)
  */
-inline double getMagnitude(complex C) {
+inline double getRadius(complex C) {
     return sqrt((C.a * C.a) + (C.bi * C.bi));
 }
 
 inline complex exponent(complex C, double n) {
-    double r = getMagnitude(C);                 // radius r
+    double r = getRadius(C);                 // radius r
     double theta = atan2(C.bi, C.a);
     double r_prod = pow(r, n);                  // r^n
     double n_theta = n * theta;                 // n*theta

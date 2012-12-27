@@ -59,27 +59,55 @@ void encodeOneStep(const char* filename, const unsigned char* image,
 {
     /*Encode the image*/
     unsigned error = lodepng_encode32_file(filename, image, width, height);
-
-    if(error) printf("error");
+    if(error) printf("error\n");
 }
 
-void writeImage(char* filename) {
+void paintBackground(unsigned char* image, uint pixels, uint argb_color) {
+    for(uint cur_pixel = 0; cur_pixel < pixels; cur_pixel++) {
+        unsigned char *cur_index = image + (cur_pixel * 4);
+        *((uint *)cur_index) = argb_color;
+    }
+}
+
+inline void colorPixel(unsigned char* image, uint index, uint iter) {
+    // R G B A
+
+    uint   intensity_max = 255;
+    double ratio = log((double)(iter)) / log((double)(MAX_ITER * 3));
+    uint   value = (uint)( ratio * (double)(intensity_max - 1) );
+
+    image[index + 0] = value;
+    image[index + 1] = value;
+    image[index + 2] = value;
+    image[index + 3] = 255;
+}
+
+void writeImage(uint (*iter_table)[TSIZE_W], char* filename) {
     /*generate some image*/
     uint width = TSIZE_H, height = TSIZE_H;
     unsigned char* image = malloc(width * height * 4);
-    uint x, y;
-    for(y = 0; y < height; y++) {
-        for(x = 0; x < width; x++) {
-            image[4 * width * y + 4 * x + 0] = 255;
-            image[4 * width * y + 4 * x + 1] = x % 255;
-            image[4 * width * y + 4 * x + 2] = x % 255;
-            image[4 * width * y + 4 * x + 3] = 255;
+    //uint background_color = 0x00EE00FF; // R G B A
+    //paintBackground(image, width * height, background_color);
+
+    uint x, y, index, cur_val;
+    for(int i = 0; i < TSIZE_H; i++ ) {
+        y = i;
+        x = 0;
+        for(int j = 0; j < TSIZE_W; j++ ) {
+            cur_val = iter_table[i][j];
+            index = 4 * width * y + 4 * x;
+            colorPixel(image, index, cur_val);
+            x++;
+        }
+        for(int j = 0; j < TSIZE_W - 2; j++ ) {
+            cur_val = iter_table[i][TSIZE_W - 2 - j];
+            index = 4 * width * y + 4 * x;
+            colorPixel(image, index, cur_val);
+            x++;
         }
     }
 
-    /*run an example*/
     encodeOneStep(filename, image, width, height);
-
     free(image);
 }
 
