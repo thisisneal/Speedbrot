@@ -76,7 +76,7 @@ inline void colorPixel(unsigned char* image, uint index, uint iter) {
     uint value, r_value, g_value, b_value, a_value;
     // Simple buddhabrot grayscale coloring
     if(PAINT_MODE == 1) {
-        double ratio = log((double)(iter)) / log((double)(MAX_ITER * 1.25));
+        double ratio = log((double)(iter)) / log((double)(MAX_ITER * 0.50));
         value = (uint)( ratio * 255.0 );
         if(value > 255) value = 255;
         r_value = g_value = b_value = value;

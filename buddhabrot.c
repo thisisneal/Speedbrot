@@ -10,10 +10,10 @@
 #include "util.h"
 
 const double start_exp = 1.0;
-const double end_exp   = 1.1;
-const uint   frames    = 120;
+const double end_exp   = 1.16;
+const uint   frames    = 250;
 
-const char *base_filepath = "images/buddhabrot10/frame";
+const char *base_filepath = "images/buddhabrot12/frame";
 
 uint iter_table_A[TSIZE_H][TSIZE_W];
 uint iter_table_B[TSIZE_H][TSIZE_W];
@@ -52,7 +52,7 @@ void fillTableBuddhabrot(double cur_exp, uint (*iter_table)[TSIZE_W]) {
     for(i = 0; i < TSIZE_H; i++ ) {
         for(j = 0; j < TSIZE_H; j++ ) {
             C = getCoords(i, j);
-            cur_value = solveMandelbrot(C, cur_exp);
+            cur_value = solveMandelbrot(C, 2.0);
             // If C is within the threshold values, then it is in
             //  the Buddhabrot set
             if(cur_value <= LEQ_ITER && cur_value >= GEQ_ITER) {
