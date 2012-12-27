@@ -11,8 +11,10 @@
 #include "complex.h"
 typedef unsigned int uint;
 
-#define PRINT_MODE  3
-#define PRINT_ALIGN 3
+const uint PRINT_MODE  = 3;
+const uint PRINT_ALIGN = 3;
+
+const uint PAINT_MODE  = 1;
 
 inline void printCur(uint cur_iter) {
     // Aligned integer printing
@@ -71,23 +73,41 @@ void paintBackground(unsigned char* image, uint pixels, uint argb_color) {
 
 inline void colorPixel(unsigned char* image, uint index, uint iter) {
     // R G B A
+    uint value, r_value, g_value, b_value, a_value;
+    // Simple buddhabrot grayscale coloring
+    if(PAINT_MODE == 1) {
+        double ratio = log((double)(iter)) / log((double)(MAX_ITER * 3));
+        value = (uint)( ratio * 255.0 );
+        if(value > 255) value = 255;
+        r_value = g_value = b_value = value;
+        a_value = 255;
+    }
+    // Colored buddhabrot
+    else if(PAINT_MODE == 2) {
+        double ratio = log((double)(iter)) / log((double)(MAX_ITER * 1.5));
+        if(ratio < 0.05) {
+            r_value = b_value = g_value = 0;
+        } else if(ratio > 1.0) {
+            r_value = b_value = g_value = 255;
+        } else {
+            value = (uint)( ratio * 125.0 );
+            b_value = 125;
+            r_value = g_value = value;
+        }
+    }
 
-    uint   intensity_max = 255;
-    double ratio = log((double)(iter)) / log((double)(MAX_ITER * 3));
-    uint   value = (uint)( ratio * (double)(intensity_max - 1) );
-
-    image[index + 0] = value;
-    image[index + 1] = value;
-    image[index + 2] = value;
-    image[index + 3] = 255;
+    image[index + 0] = r_value;
+    image[index + 1] = g_value;
+    image[index + 2] = b_value;
+    image[index + 3] = a_value;
 }
 
 void writeImage(uint (*iter_table)[TSIZE_W], char* filename) {
     /*generate some image*/
     uint width = TSIZE_H, height = TSIZE_H;
     unsigned char* image = malloc(width * height * 4);
-    //uint background_color = 0x00EE00FF; // R G B A
-    //paintBackground(image, width * height, background_color);
+    uint background_color = 0x000000FF; // R G B A
+    paintBackground(image, width * height, background_color);
 
     uint x, y, index, cur_val;
     for(int i = 0; i < TSIZE_H; i++ ) {
