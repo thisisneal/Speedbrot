@@ -9,6 +9,12 @@
 #include "constants.h"
 #include "util.h"
 
+const double start_exp = 1.0;
+const double end_exp   = 1.1;
+const uint   frames    = 120;
+
+const char *base_filepath = "images/buddhabrot10/frame";
+
 uint iter_table_A[TSIZE_H][TSIZE_W];
 uint iter_table_B[TSIZE_H][TSIZE_W];
 
@@ -65,7 +71,7 @@ void clearTable(uint (*iter_table)[TSIZE_W]) {
 void getFilename(uint i, char *filename) {
     char cur_img_num[5] = "";
     sprintf(cur_img_num, "%d", i);
-    strcat(filename, "images/buddhabrot10/frame");
+    strcat(filename, base_filepath);
     if(i < 100) strcat(filename, "0");
     if(i < 10 ) strcat(filename, "0");
     strcat(filename, cur_img_num);
@@ -76,10 +82,7 @@ int main() {
     double start_t = omp_get_wtime();
     double prev_t  = start_t;
 
-    double start_exp = 1.0;
-    double end_exp   = 2.0;
-    const uint frames = 10;
-    double exp_inc   = (end_exp - start_exp) / (double)(frames);
+    double exp_inc = (end_exp - start_exp) / (double)(frames);
 
     printf("Buddhabrot: \n");
 

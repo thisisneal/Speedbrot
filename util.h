@@ -76,7 +76,7 @@ inline void colorPixel(unsigned char* image, uint index, uint iter) {
     uint value, r_value, g_value, b_value, a_value;
     // Simple buddhabrot grayscale coloring
     if(PAINT_MODE == 1) {
-        double ratio = log((double)(iter)) / log((double)(MAX_ITER * 3));
+        double ratio = log((double)(iter)) / log((double)(MAX_ITER * 1.25));
         value = (uint)( ratio * 255.0 );
         if(value > 255) value = 255;
         r_value = g_value = b_value = value;
@@ -106,8 +106,8 @@ void writeImage(uint (*iter_table)[TSIZE_W], char* filename) {
     /*generate some image*/
     uint width = TSIZE_H, height = TSIZE_H;
     unsigned char* image = malloc(width * height * 4);
-    uint background_color = 0x000000FF; // R G B A
-    paintBackground(image, width * height, background_color);
+    //uint background_color = 0x000000FF; // R G B A
+    //paintBackground(image, width * height, background_color);
 
     uint x, y, index, cur_val;
     for(int i = 0; i < TSIZE_H; i++ ) {
