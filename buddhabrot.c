@@ -97,7 +97,7 @@ int main() {
         getFilename(i, cur_file_name);
         writeImage(iter_table, cur_file_name);
 
-        clearTable(iter_table);
+        free(iter_table);
 
         printf("Completed index : %*d ", 3, i);
         double new_t = omp_get_wtime();
