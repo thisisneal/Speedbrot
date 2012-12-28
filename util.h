@@ -14,7 +14,7 @@ typedef unsigned int uint;
 const uint PRINT_MODE  = 3;
 const uint PRINT_ALIGN = 3;
 
-const uint PAINT_MODE  = 1;
+const uint PAINT_MODE  = 2;
 
 inline void printCur(uint cur_iter) {
     // Aligned integer printing
@@ -71,43 +71,67 @@ void paintBackground(unsigned char* image, uint pixels, uint argb_color) {
     }
 }
 
+uint mixARGB(uint pixelA, uint pixelB) {
+    // Thank you dude on stack overflow for figuring this out
+    uint aA = (pixelA & 0xFF000000) >> 24;
+    uint bA = (pixelA & 0x00FF0000) >> 16;
+    uint gA = (pixelA & 0x0000FF00) >>  8;
+    uint rA = (pixelA & 0x000000FF);
+    uint aB = (pixelB & 0xFF000000) >> 24;
+    uint bB = (pixelB & 0x00FF0000) >> 16;
+    uint gB = (pixelB & 0x0000FF00) >>  8;
+    uint rB = (pixelB & 0x000000FF);
+    uint rOut = (rA * aA / 255) + (rB * aB * (255 - aA) / (255*255));
+    uint gOut = (gA * aA / 255) + (gB * aB * (255 - aA) / (255*255));
+    uint bOut = (bA * aA / 255) + (bB * aB * (255 - aA) / (255*255));
+    uint aOut = aA + (aB * (255 - aA) / 255);
+    uint pixelOut = (aOut << 24) | (bOut << 16) | (gOut << 8) | (rOut);
+    return pixelOut;
+}
+
 inline void colorPixel(unsigned char* image, uint index, uint iter) {
-    // R G B A
+    // R G B A in memory
     uint value, r_value, g_value, b_value, a_value;
     // Simple buddhabrot grayscale coloring
     if(PAINT_MODE == 1) {
-        double ratio = log((double)(iter)) / log((double)(MAX_ITER * 0.75));
+        double ratio = 1.5 * log((double)(iter)) / log((double)(MAX_ITER * 0.25));
         value = (uint)( ratio * 255.0 );
         if(value > 255) value = 255;
         r_value = g_value = b_value = value;
         a_value = 255;
+
+        image[index + 0] = r_value;
+        image[index + 1] = g_value;
+        image[index + 2] = b_value;
+        image[index + 3] = a_value;
     }
     // Colored buddhabrot
     else if(PAINT_MODE == 2) {
-        double ratio = log((double)(iter)) / log((double)(MAX_ITER * 1.5));
+        double ratio = log((double)(iter)) / log((double)(MAX_ITER * 1.25));
         if(ratio < 0.05) {
-            r_value = b_value = g_value = 0;
+            r_value = b_value = g_value = a_value = 0;
         } else if(ratio > 1.0) {
-            r_value = b_value = g_value = 255;
+            r_value = b_value = g_value = a_value = 255;
         } else {
-            value = (uint)( ratio * 125.0 );
-            b_value = 125;
-            r_value = g_value = value;
+            value = (uint)( ratio * 255.0 );
+            b_value = 255;
+            r_value = g_value = a_value = value;
         }
-    }
 
-    image[index + 0] = r_value;
-    image[index + 1] = g_value;
-    image[index + 2] = b_value;
-    image[index + 3] = a_value;
+        uint new_pixel = (a_value << 24) | (b_value << 16) |
+                         (g_value <<  8) | (r_value);
+        uint *cur_pixel_ptr = (uint *)(image + index);
+        uint cur_pixel = *cur_pixel_ptr;
+        *cur_pixel_ptr = mixARGB(new_pixel, cur_pixel);
+    }
 }
 
 void writeImage(uint *iter_table, char* filename) {
     /*generate some image*/
     uint width = TSIZE_H, height = TSIZE_H;
     unsigned char* image = malloc(width * height * 4);
-    //uint background_color = 0x000000FF; // R G B A
-    //paintBackground(image, width * height, background_color);
+    uint background_color = 0xFF000000; // R G B A but endian is backwards
+    paintBackground(image, width * height, background_color);
 
     uint x, y, index, cur_val;
     for(int i = 0; i < TSIZE_H; i++ ) {

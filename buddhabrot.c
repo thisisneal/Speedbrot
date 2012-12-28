@@ -11,9 +11,9 @@
 
 const double start_exp = 1.0;
 const double end_exp   = 3.0;
-const uint   frames    = 25;
+const uint   frames    = 9;
 
-const char *base_filepath = "images/buddhabrot14/frame";
+const char *base_filepath = "images/buddhabrot15/frame";
 
 inline uint solveMandelbrot(complex C, double cur_exp) {
     uint cur_iter = 0;
@@ -99,7 +99,7 @@ int main() {
 
         free(iter_table);
 
-        printf("Completed index : %*d ", 3, i);
+        printf("Completed frame : %*d ", 3, i);
         double new_t = omp_get_wtime();
         printf("in %6.3f seconds.\n", new_t - start_t);
     }
