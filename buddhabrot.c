@@ -9,11 +9,11 @@
 #include "constants.h"
 #include "util.h"
 
-const double start_exp = 1.0;
-const double end_exp   = 3.0;
-const uint   frames    = 9;
+const double start_exp = 1.9213;
+const double end_exp   = 1.9215;
+const uint   frames    = 2;
 
-const char *base_filepath = "images/buddhabrot15/frame";
+const char *base_filepath = "images/poster/F";
 
 inline uint solveMandelbrot(complex C, double cur_exp) {
     uint cur_iter = 0;
@@ -77,13 +77,13 @@ void getFilename(uint i, char *filename) {
 
 int main() {
     double begin_t = omp_get_wtime();
-    double exp_inc = (end_exp - start_exp) / (double)(frames);
+    double exp_inc = (end_exp - start_exp) / (double)(frames - 1);
     printf("Buddhabrot: \n");
 
     int i;
     #pragma omp parallel for private(i) \
                              schedule(dynamic)
-    for(i = 0; i < frames + 1; i++) {
+    for(i = 0; i < frames; i++) {
         double start_t = omp_get_wtime();
 
         uint *iter_table = calloc(TSIZE_W * TSIZE_H, sizeof(uint));

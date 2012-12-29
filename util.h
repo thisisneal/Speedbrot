@@ -107,15 +107,20 @@ inline void colorPixel(unsigned char* image, uint index, uint iter) {
     }
     // Colored buddhabrot
     else if(PAINT_MODE == 2) {
-        double ratio = log((double)(iter)) / log((double)(MAX_ITER * 1.25));
+        // These determine the RGB color of the cool parts of the image
+        const uint R_START = 0xFF;
+        const uint G_START = 0x11;
+        const uint B_START = 0x00;
+        double ratio = log((double)(iter)) / log((double)(MAX_ITER * 1.5));
         if(ratio < 0.05) {
-            r_value = b_value = g_value = a_value = 0;
+            r_value = b_value = g_value = a_value = 0;   // black
         } else if(ratio > 1.0) {
-            r_value = b_value = g_value = a_value = 255;
+            r_value = b_value = g_value = a_value = 255; // white
         } else {
-            value = (uint)( ratio * 255.0 );
-            b_value = 255;
-            r_value = g_value = a_value = value;
+            r_value = R_START + (ratio * (255 - R_START));
+            g_value = G_START + (ratio * (255 - G_START));
+            b_value = B_START + (ratio * (255 - B_START));
+            a_value = (ratio * 255.0);
         }
 
         uint new_pixel = (a_value << 24) | (b_value << 16) |
