@@ -42,7 +42,7 @@ int main() {
     printf("Calculations done in %f seconds.\n", t);
     double t2 = omp_get_wtime();
     //printTable(iter_table);
-    //writeImage(iter_table, "images/mandelbrot03.png");
+    //writeImage(iter_table, "images/mandelbrot03.png", 1.0);
     t2 = omp_get_wtime() - t2;
     printf("Drawing done in %f seconds.\n", t2);
     return 0;

@@ -9,11 +9,11 @@
 #include "constants.h"
 #include "util.h"
 
-const double start_exp = 1.9213;
-const double end_exp   = 1.9215;
-const uint   frames    = 2;
+const double start_exp = 1.01;
+const double end_exp   = 2.0;
+const uint   frames    = 160;
 
-const char *base_filepath = "images/poster/F";
+const char *base_filepath = "images/buddhabrot15/";
 
 inline uint solveMandelbrot(complex C, double cur_exp) {
     uint cur_iter = 0;
@@ -61,8 +61,8 @@ void fillTableBuddhabrot(double cur_exp, uint *iter_table) {
 
 void clearTable(uint *iter_table) {
     for(int i = 0; i < TSIZE_H; i++ )
-            for(int j = 0; j < TSIZE_W; j++ )
-                iter_table[i * TSIZE_W + j] = 0;
+        for(int j = 0; j < TSIZE_W; j++ )
+            iter_table[i * TSIZE_W + j] = 0;
 }
 
 void getFilename(uint i, char *filename) {
@@ -76,6 +76,17 @@ void getFilename(uint i, char *filename) {
 }
 
 int main() {
+    char info_file_name[60];
+    strcat(info_file_name, base_filepath);
+    strcat(info_file_name, "info.txt");
+    FILE *file;
+    file = fopen(info_file_name, "w+");
+    fprintf(file, "Size of Buddhabrot: %d\n", TSIZE_H);
+    fprintf(file, "Max iterations: %d\n", MAX_ITER);
+    fprintf(file, "Number of frames: %d\n", frames);
+    fprintf(file, "Exponent Range: %f - %f\n", start_exp, end_exp);
+    fclose(file);
+
     double begin_t = omp_get_wtime();
     double exp_inc = (end_exp - start_exp) / (double)(frames - 1);
     printf("Buddhabrot: \n");
@@ -90,12 +101,18 @@ int main() {
         if(iter_table == NULL)
             printf("MALLOC ERROR!!\n");
 
-        double cur_exp = start_exp + exp_inc * i;
+        double f_pct = (double) i / frames;
+        // Iteration on a scale of 0 - 1 with unit spline
+        double exp_pct = -2.0 * f_pct * f_pct * f_pct + 3.0 * f_pct * f_pct;
+        double cur_exp = start_exp + (end_exp - start_exp) * exp_pct;
+
+        // linear exponent increase
+        //double cur_exp = start_exp + exp_inc * i;
         fillTableBuddhabrot(cur_exp, iter_table);
 
         char cur_file_name[60] = "";
         getFilename(i, cur_file_name);
-        writeImage(iter_table, cur_file_name);
+        writeImage(iter_table, cur_file_name, (double)i / frames);
 
         free(iter_table);
 
@@ -105,5 +122,6 @@ int main() {
     }
     double total_t = omp_get_wtime() - begin_t;
     printf("Elapsed %f seconds.\n", total_t);
+
     return 0;
 }

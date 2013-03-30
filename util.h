@@ -89,7 +89,7 @@ uint mixARGB(uint pixelA, uint pixelB) {
     return pixelOut;
 }
 
-inline void colorPixel(unsigned char* image, uint index, uint iter) {
+void colorPixel(unsigned char* image, uint index, uint iter, double frame_pct) {
     // R G B A in memory
     uint value, r_value, g_value, b_value, a_value;
     // Simple buddhabrot grayscale coloring
@@ -107,10 +107,10 @@ inline void colorPixel(unsigned char* image, uint index, uint iter) {
     }
     // Colored buddhabrot
     else if(PAINT_MODE == 2) {
-        // These determine the RGB color of the cool parts of the image
-        const uint R_START = 0xFF;
-        const uint G_START = 0x11;
-        const uint B_START = 0x00;
+        // STARTs determine the RGB color of the cool parts of the image
+        const uint R_START = 0xFF * frame_pct;
+        const uint G_START = 0x00;
+        const uint B_START = 0xFF - 0xFF * frame_pct;
         double ratio = log((double)(iter)) / log((double)(MAX_ITER * 1.5));
         if(ratio < 0.05) {
             r_value = b_value = g_value = a_value = 0;   // black
@@ -131,7 +131,7 @@ inline void colorPixel(unsigned char* image, uint index, uint iter) {
     }
 }
 
-void writeImage(uint *iter_table, char* filename) {
+void writeImage(uint *iter_table, char* filename, double frame_pctx) {
     /*generate some image*/
     uint width = TSIZE_H, height = TSIZE_H;
     unsigned char* image = malloc(width * height * 4);
@@ -145,13 +145,13 @@ void writeImage(uint *iter_table, char* filename) {
         for(int j = 0; j < TSIZE_W; j++ ) {
             cur_val = iter_table[i * TSIZE_W + j];
             index = 4 * width * y + 4 * x;
-            colorPixel(image, index, cur_val);
+            colorPixel(image, index, cur_val, frame_pctx);
             x++;
         }
         for(int j = 0; j < TSIZE_W - 2; j++ ) {
             cur_val = iter_table[i * TSIZE_W + (TSIZE_W - 2 - j)];
             index = 4 * width * y + 4 * x;
-            colorPixel(image, index, cur_val);
+            colorPixel(image, index, cur_val, frame_pctx);
             x++;
         }
     }
