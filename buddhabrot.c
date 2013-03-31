@@ -11,7 +11,7 @@
 
 const double start_exp = 1.01;
 const double end_exp   = 2.0;
-const uint   frames    = 160;
+const uint   frames    = 300;
 
 const char *base_filepath = "images/buddhabrot15/";
 
